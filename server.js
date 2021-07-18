@@ -5,6 +5,8 @@ const dotenv = require('dotenv')
 const port = process.env.PORT || 5000;
 const app = express();
 const authRouter = require('./Routers/authRouter')
+const PostRouter = require('./Routers/PostRouter')
+
 
 //middlewares
 dotenv.config();
@@ -13,6 +15,7 @@ app.use(cors());
 
 //routers
 app.use('/api/auth', authRouter);
+app.use('/api/post', PostRouter);
 
 //connect to mongo db
 mongoose.connect(process.env.MONGOURL, { useUnifiedTopology: true, useNewUrlParser: true, useCreateIndex: true, useFindAndModify: false })
