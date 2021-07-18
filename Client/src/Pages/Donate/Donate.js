@@ -68,6 +68,7 @@ class AddProduct extends React.Component {
         }
     }
 
+
     handleInputChange = (e) => {
 
         this.setState({
@@ -77,8 +78,6 @@ class AddProduct extends React.Component {
 
     uploadImageURL = (item) => {
         try {
-
-
             return URL.createObjectURL(item)
         } catch (error) {
             return item
@@ -96,7 +95,7 @@ class AddProduct extends React.Component {
             if (image.startsWith("https")) {
                 //console.log("qEDa");
                 this.setState(
-                    { loading: true },
+
                     this.deleteImage([image], 0, () => {
                         this.setState({
                             images,
@@ -119,62 +118,96 @@ class AddProduct extends React.Component {
 
 
 
+    eraserData = () => {
+        this.setState({
+            loading: false
+        })
+        let y = this.state.images.length;
+        this.setState({
+            images: [],
+            Description: { error: "", value: "" },
+            address: { error: "", value: "" },
+            any_other: { error: "", value: "" },
+            data: [],
+        });
+        while (y--)
+            this.removeImage();
+    }
+
 
 
     savePostData = async () => {
-        // console.log(this.state);
-        // return;
 
         if (this.state.images.length < 1) {
             console.log("add atleast 3 images");
             return;
         }
-        const imgUrls = [];
-        console.log("loading")
-
-        this.state.images.map(async (image) => {
-            const data = new FormData();
-            data.append('file', image);
-            data.append('upload_preset', "SocialMedia");
-            data.append('cloud_name', "djqrcbjmu");
-            const data1 = await fetch("	https://api.cloudinary.com/v1_1/djqrcbjmu/image/upload", {
-                method: "post",
-                body: data
-            });
-            const data2 = await data1.json();
-            const url = await data2.secure_url;
-            imgUrls.push(url);
-            if (imgUrls.length === this.state.images.length) {
-                const sdata = {};
-                sdata['images'] = imgUrls;
-                sdata['postedBy'] = this.props.id;
-                sdata['lat'] = "22";
-                sdata['lon'] = "33";
-                sdata['address'] = this.state.address.value;
-                sdata['description'] = this.state.Description.value;
-                sdata['any_other'] = this.state.any_other.value;
-                sdata['fooditems'] = this.state.data;
-                console.log(sdata);
-
-                const upload = await axios.post('/api/post/addpost', sdata);
-                console.log(upload)
-
-                let y = imgUrls.length;
-                this.setState({
-                    images: [],
-                    Description: { error: "", value: "" },
-                    address: { error: "", value: "" },
-                    any_other: { error: "", value: "" },
-                    data: [],
-                });
-                while (y--)
-                    this.removeImage();
-
-            }
-
-        });
+        this.setState({
+            loading: true
+        })
+        const sdata = {};
+        // sdata['images'] = imgUrls;
+        sdata['postedBy'] = this.props.id;
+        sdata['lat'] = "22";
+        sdata['lon'] = "33";
+        sdata['address'] = this.state.address.value;
+        sdata['description'] = this.state.Description.value;
+        sdata['any_other'] = this.state.any_other.value;
+        sdata['fooditems'] = this.state.data;
 
 
+
+        this.props.CreatePosts(this.state.images, sdata, this.eraserData)
+        // const imgUrls = [];
+        // console.log("loading")
+
+        // this.state.images.map(async (image) => {
+        //     const data = new FormData();
+        //     data.append('file', image);
+        //     data.append('upload_preset', "SocialMedia");
+        //     data.append('cloud_name', "djqrcbjmu");
+        //     const data1 = await fetch("	https://api.cloudinary.com/v1_1/djqrcbjmu/image/upload", {
+        //         method: "post",
+        //         body: data
+        //     });
+        //     const data2 = await data1.json();
+        //     const url = await data2.secure_url;
+        //     imgUrls.push(url);
+        //     if (imgUrls.length === this.state.images.length) {
+        //         const sdata = {};
+        //         sdata['images'] = imgUrls;
+        //         sdata['postedBy'] = this.props.id;
+        //         sdata['lat'] = "22";
+        //         sdata['lon'] = "33";
+        //         sdata['address'] = this.state.address.value;
+        //         sdata['description'] = this.state.Description.value;
+        //         sdata['any_other'] = this.state.any_other.value;
+        //         sdata['fooditems'] = this.state.data;
+        //         console.log(sdata);
+
+        //         const upload = await axios.post('/api/post/addpost', sdata);
+        //         console.log(upload)
+
+
+
+        //     }
+
+        // });
+
+
+
+
+
+        // let y = this.state.images.length;
+        // this.setState({
+        //     images: [],
+        //     Description: { error: "", value: "" },
+        //     address: { error: "", value: "" },
+        //     any_other: { error: "", value: "" },
+        //     data: [],
+        // });
+        // while (y--)
+        //     this.removeImage()
 
 
 
@@ -324,7 +357,7 @@ class AddProduct extends React.Component {
                     <span >Upload</span>
                 </label>
 
-                <Snackbar
+                {/* <Snackbar
                     anchorOrigin={{
                         vertical: 'bottom',
                         horizontal: 'left',
@@ -335,7 +368,7 @@ class AddProduct extends React.Component {
                         snakbar: false
                     })}
                     message={this.state.snackbar_error}
-                />
+                /> */}
 
                 <Backdrop
                     style={{ zIndex: "1600" }}

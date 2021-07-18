@@ -15,7 +15,7 @@ function Post(props) {
             <div className="post-container-details">
                 <div>
                     <div className="posted_by_user">
-                        <img src="" />
+                        <img src={props.image} />
                         <h4>{props.username}</h4>
                     </div>
                     <div className="post_availability">

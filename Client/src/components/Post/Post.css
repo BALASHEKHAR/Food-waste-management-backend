@@ -61,6 +61,7 @@
 }
 .posted_by_user{
     display: flex;
+    cursor: pointer;
     align-items: center;
 }
 .posted_by_user img{

@@ -62,20 +62,27 @@ function Dashboard(props) {
     return (
 
         <div className="dashboard">
+
             <div className="dashboard_search_location">
                 <div className="dashboard_search">
                     <input type="search" required />
                     <SearchIcon />
                 </div>
+
                 <div className="dashboard_location">
                     <button>location<i className="fa fa-map-marker"></i></button>
                 </div>
-            </div>
-            <div className="dashboard_posts">
                 {
-                    props.posts.posts.map((post, index) => (
+                    props.posts?.posts?.length === 0 && "No Posts found "
+                }
+            </div>
 
-                        <Post key={index} post={post} username={props.user.user.name} />
+            <div className="dashboard_posts">
+
+                {
+                    props.posts?.posts?.map((post, index) => (
+
+                        <Post key={index} post={post} username={props.user.user.name} image={props.user?.user?.image} />
                     ))
                 }
             </div>

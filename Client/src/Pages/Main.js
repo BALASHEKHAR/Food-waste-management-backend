@@ -4,6 +4,7 @@ import Home from '../components/Home/Home';
 import { BrowserRouter, Switch, Route } from 'react-router-dom'
 import Register from './Register/Register';
 import Dashboard from './Dashboard/Dashboard';
+import Account from './Account/Account';
 import Auth from '../auth';
 import Donate from './Donate/Donate';
 import { LoadUser } from '../redux/actions/userAction';
@@ -12,9 +13,12 @@ import { connect } from 'react-redux';
 
 
 function Main(props) {
-    useEffect(() => {
+    const LoadState = () => {
         props.LoadUser();
         props.LoadPosts();
+    }
+    useEffect(() => {
+        LoadState();
     }, [])
     return (
 
@@ -35,14 +39,22 @@ function Main(props) {
                     </Route>
 
                     <Route path="/dashboard" exact>
-                        <Header />
-                        <Dashboard posts={props.posts} user={props.user} />
+                        <Auth user={props.user} posts={props.posts} LoadState={LoadState}>
+                            <Header />
+                            <Dashboard posts={props.posts} user={props.user} />
+                        </Auth>
+                    </Route>
+                    <Route path="/account" exact>
+                        <Auth user={props.user} posts={props.posts} LoadState={LoadState}>
+                            <Header />
+                            <Account posts={props.posts} user={props.user?.user} />
+                        </Auth>
                     </Route>
 
                     <Route path="/donate" exact>
-                        <Auth>
+                        <Auth user={props.user} posts={props.posts} LoadState={LoadState}>
                             <Header />
-                            <Donate posts={props.posts} CreatePosts={CreatePosts} />
+                            <Donate CreatePosts={props.CreatePosts} id={props.user?.user?._id} />
                         </Auth>
                     </Route>
 
@@ -67,7 +79,7 @@ const mapDispatchToProps = (dispatch) => {
     return {
         LoadUser: () => dispatch(LoadUser()),
         LoadPosts: () => dispatch(LoadPosts()),
-        CreatePosts: () => dispatch(CreatePosts()),
+        CreatePosts: (images, data, eraserData) => dispatch(CreatePosts(images, data, eraserData)),
     }
 }
 

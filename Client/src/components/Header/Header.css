@@ -26,7 +26,14 @@
     display: flex;
     flex-direction: row;
 }
-
+.profile-image{
+    object-fit: cover;
+    width: 50px;
+    padding: -10px;
+    height: 50px;
+    border-radius: 50%;
+    border: 1px solid black;
+}
 
 .header_middle a,.header_middle_open a{
     text-decoration: none;

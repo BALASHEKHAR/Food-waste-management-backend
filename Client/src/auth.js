@@ -7,6 +7,9 @@ function Auth(props) {
 
     if (!props.login) {
         if (token) {
+            if (props.user || props.posts === null) {
+                props.LoadState();
+            }
             return props.children
         }
         else {

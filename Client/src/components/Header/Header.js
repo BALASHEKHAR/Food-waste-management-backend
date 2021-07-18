@@ -16,6 +16,13 @@ function Header() {
     const openDashboard = () => {
         history.push("dashboard");
     }
+    const openAccount = () => {
+        history.push("account");
+    }
+    const openHome = () => {
+
+        history.push("/");
+    }
 
     return (
         <div className="header_main">
@@ -26,13 +33,19 @@ function Header() {
                 </Link>
             </div>
             <div className={open ? "header_middle_open" : "header_middle"}>
+                <a onClick={openHome}>
+                    <p>Home</p>
+                </a>
                 <a onClick={openDashboard}>
                     <p>Dashboard</p>
                 </a>
-                <a href="#about_us">
+                <a onClick={openAccount}>
+                    <p>Account</p>
+                </a>
+                <a href='/#about_us'>
                     <p>About</p>
                 </a>
-                <a href="#help">
+                <a href='/#help'>
                     <p>Help</p>
                 </a>
                 <>
