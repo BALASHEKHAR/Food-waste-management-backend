@@ -11,14 +11,13 @@
     height: 100%;
     max-width: 500px;
     overflow: hidden;
-   
-
 }
 .post-container-details{
     position: relative;
     overflow: auto;
     width: 50%;
     height: 100%;
+    max-width: 500px;
     float: left;
     padding: 10px;
     padding-left: 20px;
@@ -48,8 +47,6 @@
 	border-radius: 5px;  
 	cursor: pointer;
 	outline: none;
-   
-
 	color: #eee;
 	transition: transform 0.3s;
 	margin: 5px 5px;

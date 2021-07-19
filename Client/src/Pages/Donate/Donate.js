@@ -1,4 +1,5 @@
 import React, { forwardRef } from 'react';
+import { withRouter } from 'react-router'
 import AddBox from '@material-ui/icons/AddBox';
 import ArrowDownward from '@material-ui/icons/ArrowDownward';
 import Check from '@material-ui/icons/Check';
@@ -48,23 +49,23 @@ const tableIcons = {
     ViewColumn: forwardRef((props, ref) => <ViewColumn {...props} ref={ref} />)
 };
 class AddProduct extends React.Component {
+
     constructor(props) {
         super(props)
 
         this.state = {
             snakbar: false,
             loading: false,
-            Description: { error: "", value: "" },
-            address: { error: "", value: "" },
-            any_other: { error: "", value: "" },
-            images: [],
+            Description: { error: "", value: props.location?.state?.description },
+            address: { error: "", value: props.location?.state?.address },
+            any_other: { error: "", value: props.location?.state?.any_other },
+            images: props.location.state ? [...props.location?.state?.images] : [],
             columns: [
                 { title: 'item_name', field: 'item_name' },
                 { title: 'availability', field: 'availability' },
                 { title: 'spoil_in_hrs', field: 'spoil_in_hrs' },
             ],
-            data: [
-            ]
+            data: props.location.state ? [...props.location?.state?.fooditems] : [],
         }
     }
 
@@ -155,61 +156,10 @@ class AddProduct extends React.Component {
         sdata['any_other'] = this.state.any_other.value;
         sdata['fooditems'] = this.state.data;
 
-
-
-        this.props.CreatePosts(this.state.images, sdata, this.eraserData)
-        // const imgUrls = [];
-        // console.log("loading")
-
-        // this.state.images.map(async (image) => {
-        //     const data = new FormData();
-        //     data.append('file', image);
-        //     data.append('upload_preset', "SocialMedia");
-        //     data.append('cloud_name', "djqrcbjmu");
-        //     const data1 = await fetch("	https://api.cloudinary.com/v1_1/djqrcbjmu/image/upload", {
-        //         method: "post",
-        //         body: data
-        //     });
-        //     const data2 = await data1.json();
-        //     const url = await data2.secure_url;
-        //     imgUrls.push(url);
-        //     if (imgUrls.length === this.state.images.length) {
-        //         const sdata = {};
-        //         sdata['images'] = imgUrls;
-        //         sdata['postedBy'] = this.props.id;
-        //         sdata['lat'] = "22";
-        //         sdata['lon'] = "33";
-        //         sdata['address'] = this.state.address.value;
-        //         sdata['description'] = this.state.Description.value;
-        //         sdata['any_other'] = this.state.any_other.value;
-        //         sdata['fooditems'] = this.state.data;
-        //         console.log(sdata);
-
-        //         const upload = await axios.post('/api/post/addpost', sdata);
-        //         console.log(upload)
-
-
-
-        //     }
-
-        // });
-
-
-
-
-
-        // let y = this.state.images.length;
-        // this.setState({
-        //     images: [],
-        //     Description: { error: "", value: "" },
-        //     address: { error: "", value: "" },
-        //     any_other: { error: "", value: "" },
-        //     data: [],
-        // });
-        // while (y--)
-        //     this.removeImage()
-
-
+        if (!this.props.location.state)
+            this.props.CreatePosts(this.state.images, sdata, this.eraserData);
+        else
+            this.props.UpdatePost(this.props.location.state._id, this.props.location.state.images, this.state.images, sdata, this.eraserData);
 
 
 
@@ -228,7 +178,7 @@ class AddProduct extends React.Component {
 
                 <Box display="flex" flexWrap="true">
                     {this.state.images.map((item, index) => (
-                        <Box margin="12px">
+                        <Box key={index} margin="12px">
                             <img
                                 src={this.uploadImageURL(item)}
                                 style={{ height: "90px", width: "160px" }} />
@@ -382,4 +332,4 @@ class AddProduct extends React.Component {
 }
 
 
-export default (AddProduct);
+export default withRouter(AddProduct);

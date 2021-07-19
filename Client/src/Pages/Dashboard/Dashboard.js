@@ -4,61 +4,9 @@ import SearchIcon from '@material-ui/icons/Search';
 import Post from '../../components/Post/Post';
 
 function Dashboard(props) {
-    const data = [
-        {
-            images: ["", "", ""],
-            items: ["tomato", "alu", "potato"],
-            person: "bala",
-            date: "23/03/2022",
-            expiredDate: "34/33/0000",
-            city: "hyderabad",
-            place: "yadadri",
-            spot: "sadhuvelly",
-            availability: "10kgs",
-            remained: "3kgs",
-            rating: "5"
-        },
-        {
-            images: ["", "", ""],
-            items: ["tomato", "alu", "potato"],
-            person: "bala",
-            date: "23/03/2022",
-            expiredDate: "34/33/0000",
-            city: "hyderabad",
-            place: "yadadri",
-            spot: "sadhuvelly",
-            availability: "10kgs",
-            remained: "3kgs"
-        }, {
-            images: ["", "", ""],
-            items: ["tomato", "alu", "potato"],
-            person: "bala",
-            date: "23/03/2022",
-            expiredDate: "34/33/0000",
-            city: "hyderabad",
-            place: "yadadri",
-            spot: "sadhuvelly",
-            availability: "10kgs",
-            remained: "3kgs",
-            rating: "5"
-        }, {
-            images: ["", "", ""],
-            items: ["tomato", "alu", "potato"],
-            person: "bala",
-            date: "23/03/2022",
-            expiredDate: "34/33/0000",
-            city: "hyderabad",
-            place: "yadadri",
-            spot: "sadhuvelly",
-            availability: "10kgs",
-            remained: "3kgs",
-            rating: "5"
-        }
 
-    ]
-    useEffect(() => {
-        console.log(props);
-    }, [])
+
+
     return (
 
         <div className="dashboard">
@@ -81,8 +29,9 @@ function Dashboard(props) {
 
                 {
                     props.posts?.posts?.map((post, index) => (
+                        //    { console.log(post)&& 2}
 
-                        <Post key={index} post={post} username={props.user.user.name} image={props.user?.user?.image} />
+                        <Post key={index} post={post} />
                     ))
                 }
             </div>

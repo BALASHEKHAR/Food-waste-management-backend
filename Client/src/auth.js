@@ -6,10 +6,9 @@ function Auth(props) {
     let token = localStorage.getItem("token");
 
     if (!props.login) {
+        if (props.data.user === null)
+            return <div>Loading..</div>
         if (token) {
-            if (props.user || props.posts === null) {
-                props.LoadState();
-            }
             return props.children
         }
         else {

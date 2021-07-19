@@ -24,21 +24,22 @@ const postReducer = (state = initState, action) => {
         case CREATE_POST:
             return {
                 ...state,
-                posts: action.payload,
+                posts: [action.payload, ...state.posts],
                 loading: false,
                 error: null
             };
         case UPDATE_POST:
             return {
                 ...state,
-                posts: action.payload,
+                posts: [action.payload, ...state.posts.filter((post) => post._id != action.payload._id)],
                 loading: false,
                 error: null
+
             };
         case DELETE_POST:
             return {
                 ...state,
-                posts: action.payload,
+                posts: state.posts.filter((post) => post._id !== action.payload._id),
                 loading: false,
                 error: null
             };

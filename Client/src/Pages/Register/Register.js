@@ -3,7 +3,7 @@ import './Register.css';
 import axios from 'axios';
 import { useHistory } from 'react-router-dom';
 
-export default function Register() {
+export default function Register(props) {
 
     let history = useHistory();
 
@@ -35,7 +35,8 @@ export default function Register() {
         const data = await axios.post('http://localhost:5000/api/auth/login', Data);
 
         localStorage.setItem("token", data.data.token)
-
+        props.LoadUser();
+        props.LoadPosts();
         history.replace('/');
     }
 

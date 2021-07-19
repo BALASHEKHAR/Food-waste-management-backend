@@ -1,5 +1,6 @@
 import React from 'react'
-import './Post.css'
+import { useHistory } from 'react-router-dom'
+import './userProfilePost.css';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -8,20 +9,25 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 
-function Post(props) {
+function UserProfilePost(props) {
+    const history = useHistory();
+    console.log(props.post)
+    const editPost = () => {
+        history.push('/donate', props.post);
+    }
 
+    const deletePost = () => {
+
+        props.DeletePost(props?.post?._id);
+    }
     return (
-        <div className="post-container">
-            <div className="post-container-details">
+        <div className="upost-container-details">
+            <Paper style={{ padding: "10px" }} elevation={4}>
                 <div>
-                    <div className="posted_by_user">
-                        <img src={props.post?.postedBy?.image} />
-                        <h4>{props.post?.postedBy?.name}</h4>
 
-                    </div>
-                    <p>posted on - {props.post?.createdAt?.slice(0, 10)}</p>
-                    <div className="post_availability">
-                        <b>Description : </b>{props.post.description}
+                    <div className="upost_availability">
+                        <b>Description : </b>{props.post?.description}
+                        <p>posted on - {props.post?.createdAt?.toString().slice(0, 10)}</p>
                     </div>
                     {/* tabel */}
 
@@ -37,8 +43,8 @@ function Post(props) {
                                     </TableRow>
                                 </TableHead>
                                 <TableBody>
-                                    {props.post.fooditems.map((row) => (
-                                        <TableRow key={row.name}>
+                                    {props.post.fooditems.map((row, index) => (
+                                        <TableRow key={index}>
                                             <TableCell align="center">{row.availability}</TableCell>
                                             <TableCell align="center">{row.item_name}</TableCell>
                                             <TableCell align="center">{row.spoil_in_hrs}</TableCell>
@@ -58,10 +64,10 @@ function Post(props) {
                             <li>item1 <span>1kg</span></li>
                         </ul>
                     </div> */}
-                    <div className="post_loc">
+                    <div className="upost_loc">
                         <b>Address : </b>{props.post.address}
                     </div>
-                    <div className="post_remined">
+                    <div className="upost_remined">
 
                         <b>Other Details :</b>{props.post.any_other}
                     </div>
@@ -70,22 +76,16 @@ function Post(props) {
 
 
                 </div>
-                <div className="post_button">
-                    <button className="req_now_btn">
-                        Request</button>
-                    <button className="req_now_btn">
-                        show on map</button>
-                    <button className="req_now_btn">
-                        show directions</button>
+                <div className="upost_button">
+                    <button onClick={editPost} className="ureq_now_btn">
+                        Edit</button>
+                    <button onClick={deletePost} className="ureq_now_btn">
+                        Delete</button>
 
                 </div>
-            </div>
-            <div style={{ display: props.isProfile ? "none" : "block", width: props.isProfile ? "0%" : "50%" }} className="post-container-img">
-
-                <img src={props.post.images[0]} />
-            </div>
+            </Paper>
         </div>
     )
 }
 
-export default Post
+export default UserProfilePost

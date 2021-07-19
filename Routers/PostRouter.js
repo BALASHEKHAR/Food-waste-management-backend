@@ -1,12 +1,13 @@
 const express = require('express');
 const router = express.Router();
 const PostModel = require('../Models/PostModel')
+const auth = require('../middlewares/auth')
 
 //dummy image for post
 const url = "https://cloud.mongodb.com/static/images/data-explorer-empty.svg"
 
 
-router.post('/addpost', async (req, res) => {
+router.post('/addpost', auth, async (req, res) => {
     try {
         //dummy data
         req.body = {
@@ -26,7 +27,7 @@ router.post('/addpost', async (req, res) => {
 
         //save post to database
         const addpost = await new PostModel(req.body);
-        await addpost.save();
+        await addpost.save().then(t => t.populate('postedBy').execPopulate());
         res.status(200).json(addpost);
     }
     catch (err) {
@@ -40,7 +41,7 @@ router.post('/addpost', async (req, res) => {
 router.get('/allposts', async (req, res) => {
     try {
         //geting posts fron db
-        const allPosts = await PostModel.find();
+        const allPosts = await PostModel.find().populate('postedBy');
         res.status(200).json(allPosts);
     }
     catch (err) {
@@ -66,7 +67,7 @@ router.put('/:id', async (req, res) => {
 
     //dummy data
     req.body = {
-        ...req.body,
+
         images: [url, url, url, url],
         postedBy: "60ef9ca5f444c43690513ef2",
         lat: "11",
@@ -76,12 +77,15 @@ router.put('/:id', async (req, res) => {
         spot: "spot",
         availability: "availability",
         remained: "remained",
-        expires: new Date
+        expires: new Date,
+        ...req.body
     }
     try {
 
         //find post and update
-        const allPosts = await PostModel.findOneAndUpdate(req.params.id, req.body, { new: true });
+        console.log(req.body);
+        const allPosts = await PostModel.findByIdAndUpdate(req.params.id, req.body, { new: true }).then(t => t.populate('postedBy').execPopulate());
+        console.log(allPosts)
         if (allPosts) res.status(200).json(allPosts);
         else res.status(403).json("no posts found");
     }
@@ -90,11 +94,11 @@ router.put('/:id', async (req, res) => {
     }
 });
 
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', auth, async (req, res) => {
     try {
         //find post and delete
-        await PostModel.findByIdAndDelete(req.params.id);
-        res.status(200).json("successfully deleted");
+        const deletedPost = await PostModel.findByIdAndDelete(req.params.id);
+        res.status(200).json(deletedPost);
     }
     catch (err) {
         res.status(500).json(err.message);
