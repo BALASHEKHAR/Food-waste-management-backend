@@ -8,6 +8,12 @@ const PostModel = new mongoose.Schema({
         type: ObjectId,
         ref: "user"
     },
+    country: {
+        type: String
+    },
+    city: {
+        type: String
+    },
     lat: {
         type: String
     },

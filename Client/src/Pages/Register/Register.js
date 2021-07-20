@@ -32,12 +32,18 @@ export default function Register(props) {
             password,
             email
         }
-        const data = await axios.post('http://localhost:5000/api/auth/login', Data);
+        props.LoginUser(Data, () => {
+            props.LoadUser(() => {
+                console.log("user loaded");
+            });
+            props.LoadPosts(() => {
+                console.log("posts loaded")
+            });
+            history.replace('/');
+        })
 
-        localStorage.setItem("token", data.data.token)
-        props.LoadUser();
-        props.LoadPosts();
-        history.replace('/');
+
+
     }
 
     const signUpUser = async () => {
@@ -46,12 +52,15 @@ export default function Register(props) {
             email: remail,
             password: rpassword
         }
-        console.log("loading")
-        const res = await axios.post('http://localhost:5000/api/auth/register', Data);
-
-        localStorage.setItem("token", res.data.token);
-
-        history.replace('/');
+        props.signupUser(Data, () => {
+            props.LoadUser(() => {
+                console.log("user loaded");
+            });
+            props.LoadPosts(() => {
+                console.log("posts loaded")
+            });
+            history.replace('/');
+        })
     }
 
     return (

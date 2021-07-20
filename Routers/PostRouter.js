@@ -16,6 +16,7 @@ router.post('/addpost', auth, async (req, res) => {
             postedBy: "60ef9ca5f444c43690513ef2",
             lat: "11",
             lon: "12",
+            country: "country",
             city: "city",
             locality: "locality",
             spot: "spot",
@@ -28,6 +29,7 @@ router.post('/addpost', auth, async (req, res) => {
         //save post to database
         const addpost = await new PostModel(req.body);
         await addpost.save().then(t => t.populate('postedBy').execPopulate());
+        console.log(addpost)
         res.status(200).json(addpost);
     }
     catch (err) {
@@ -41,7 +43,7 @@ router.post('/addpost', auth, async (req, res) => {
 router.get('/allposts', async (req, res) => {
     try {
         //geting posts fron db
-        const allPosts = await PostModel.find().populate('postedBy');
+        const allPosts = await PostModel.find().populate('postedBy').sort('-createdAt');
         res.status(200).json(allPosts);
     }
     catch (err) {
@@ -72,6 +74,7 @@ router.put('/:id', async (req, res) => {
         postedBy: "60ef9ca5f444c43690513ef2",
         lat: "11",
         lon: "12",
+        country: "country",
         city: "city",
         locality: "locality",
         spot: "spot",

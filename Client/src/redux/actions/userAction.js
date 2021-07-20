@@ -5,9 +5,39 @@ import {
     LOGOUT_USER,
     ERROR
 } from '../actionTypes';
-import axios from 'axios'
+import axios from 'axios';
+import { LoadPosts } from './postsAction';
 
-export const LoadUser = () => {
+export const LoginUser = (data, onSuccess) => {
+    return async (dispatch, getState) => {
+        try {
+            const user = await axios.post('/api/auth/login', data);
+            dispatch({ type: LOGIN_USER, payload: user.data });
+            localStorage.setItem("token", user.data.token);
+            onSuccess();
+        } catch (err) {
+            console.log(err);
+            dispatch({ type: ERROR, payload: err.response })
+        }
+    }
+}
+
+export const signupUser = (data, onSuccess) => {
+    return async (dispatch, getState) => {
+        try {
+            const user = await axios.post('/api/auth/register', data);
+            dispatch({ type: SIGNUP_USER, payload: user.data });
+            localStorage.setItem("token", user.data.token);
+            onSuccess();
+        } catch (err) {
+            console.log(err);
+            dispatch({ type: ERROR, payload: err.response })
+        }
+    }
+}
+
+
+export const LoadUser = (onSuccess) => {
     return async (dispatch, getState) => {
         try {
             let token = localStorage.getItem("token");
@@ -20,11 +50,18 @@ export const LoadUser = () => {
                     "authentication": token
                 }
             });
-
-
-            dispatch({ type: LOAD_USER, payload: user.data })
+            dispatch({ type: LOAD_USER, payload: user.data });
+            onSuccess();
         } catch (err) {
-            dispatch({ type: ERROR, payload: err.response.data })
+            console.log(err)
+            dispatch({ type: ERROR, payload: err.response })
         }
+    }
+}
+
+export const LogoutUser = () => {
+    return (dispatch, getState) => {
+        localStorage.removeItem("token");
+        dispatch({ type: LOGOUT_USER });
     }
 }

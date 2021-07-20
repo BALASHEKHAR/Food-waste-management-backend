@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef } from 'react';
 import './Home.css'
 import nofoodwaste from '../../Media/nofoodwaste.png'
 import aboutUsImg from '../../Media/about_us_img.jpg'
@@ -6,13 +6,27 @@ import helpingHands from '../../Media/helpingHands.jpg'
 import mission from '../../Media/mission.jpg'
 import contactUs from '../../Media/contactUs.jpg'
 import { useHistory } from 'react-router-dom';
+import Button from '@material-ui/core/Button';
+import Snackbar from '@material-ui/core/Snackbar';
+import IconButton from '@material-ui/core/IconButton';
+import CloseIcon from '@material-ui/icons/Close';
+
 
 
 function Home(props) {
     const history = useHistory();
     const [first_name, setFirst_name] = useState("")
     const [full_name, setFull_name] = useState("")
-    const [desc, setDesc] = useState("")
+    const [desc, setDesc] = useState("");
+    const [open, setOpen] = React.useState(false);
+
+    const handleClick = () => {
+        setOpen(true);
+    };
+
+    const handleClose = (event, reason) => {
+        setOpen(false);
+    };
 
     let first_name_ref = useRef();
     let full_name_ref = useRef();
@@ -43,7 +57,15 @@ function Home(props) {
         setDesc("");
     }
     const openDonatePage = () => {
+        if (!localStorage.getItem("token")) {
+            handleClick();
+            return;
+        }
         history.push('donate')
+    }
+
+    const pushToLoginPage = () => {
+        history.replace('/login');
     }
 
 
@@ -157,6 +179,26 @@ function Home(props) {
                 </div>
             </div>
             {/* contact us end */}
+            <Snackbar
+                anchorOrigin={{
+                    vertical: 'bottom',
+                    horizontal: 'left',
+                }}
+                open={open}
+                autoHideDuration={6000}
+                onClose={handleClose}
+                message="Please Login to Donate"
+                action={
+                    <React.Fragment>
+                        <Button color="secondary" size="small" onClick={pushToLoginPage}>
+                            login
+                        </Button>
+                        <IconButton size="small" aria-label="close" color="inherit" onClick={handleClose}>
+                            <CloseIcon fontSize="small" />
+                        </IconButton>
+                    </React.Fragment>
+                }
+            />
         </div >
     )
 }

@@ -17,6 +17,7 @@ import Search from '@material-ui/icons/Search';
 import ViewColumn from '@material-ui/icons/ViewColumn';
 import './Donate.css'
 import axios from 'axios'
+import { CountryDropdown, RegionDropdown } from 'react-country-region-selector';
 
 import {
     Box,
@@ -58,6 +59,8 @@ class AddProduct extends React.Component {
             loading: false,
             Description: { error: "", value: props.location?.state?.description },
             address: { error: "", value: props.location?.state?.address },
+            country: { value: props.location?.state?.country },
+            region: { value: props.location?.state?.region },
             any_other: { error: "", value: props.location?.state?.any_other },
             images: props.location.state ? [...props.location?.state?.images] : [],
             columns: [
@@ -69,7 +72,13 @@ class AddProduct extends React.Component {
         }
     }
 
+    selectCountry(val) {
+        this.setState({ country: val });
+    }
 
+    selectRegion(val) {
+        this.setState({ region: val });
+    }
     handleInputChange = (e) => {
 
         this.setState({
@@ -126,6 +135,8 @@ class AddProduct extends React.Component {
         let y = this.state.images.length;
         this.setState({
             images: [],
+            country: "",
+            region: "",
             Description: { error: "", value: "" },
             address: { error: "", value: "" },
             any_other: { error: "", value: "" },
@@ -148,6 +159,8 @@ class AddProduct extends React.Component {
         })
         const sdata = {};
         // sdata['images'] = imgUrls;
+        sdata['country'] = this.state.country;
+        sdata['city'] = this.state.region;
         sdata['postedBy'] = this.props.id;
         sdata['lat'] = "22";
         sdata['lon'] = "33";
@@ -155,6 +168,9 @@ class AddProduct extends React.Component {
         sdata['description'] = this.state.Description.value;
         sdata['any_other'] = this.state.any_other.value;
         sdata['fooditems'] = this.state.data;
+
+
+
 
         if (!this.props.location.state)
             this.props.CreatePosts(this.state.images, sdata, this.eraserData);
@@ -176,12 +192,12 @@ class AddProduct extends React.Component {
                 </Typography>
 
 
-                <Box display="flex" flexWrap="true">
+                <Box display="flex" flexWrap="wrap">
                     {this.state.images.map((item, index) => (
                         <Box key={index} margin="12px">
                             <img
                                 src={this.uploadImageURL(item)}
-                                style={{ height: "90px", width: "160px" }} />
+                                style={{ height: "160px", width: "160px", objectFit: "cover" }} />
                             <br />
                             <IconButton
                                 aria-label="delete"
@@ -230,6 +246,19 @@ class AddProduct extends React.Component {
                     onChange={(e) => this.handleInputChange(e)}
                     value={this.state.Description.value}
                 />
+
+
+                <div className="dropdowns">  <CountryDropdown
+                    className="donate-input"
+                    value={this.state.country}
+                    onChange={(val) => this.selectCountry(val)} />
+                    <RegionDropdown
+
+                        className="donate-input"
+                        country={this.state.country}
+                        value={this.state.region}
+                        onChange={(val) => this.selectRegion(val)} />
+                </div>
 
                 <div className="place-wrapper">
 

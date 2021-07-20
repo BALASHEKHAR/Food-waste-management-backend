@@ -8,34 +8,39 @@ function Dashboard(props) {
 
 
     return (
+        <div>
 
-        <div className="dashboard">
+            {
+                props.posts?.posts?.length === 0 ? <div style={{ marginTop: "20px", textAlign: "center" }}>No Posts found</div> :
+                    <div className="dashboard">
 
-            <div className="dashboard_search_location">
-                <div className="dashboard_search">
-                    <input type="search" required />
-                    <SearchIcon />
-                </div>
 
-                <div className="dashboard_location">
-                    <button>location<i className="fa fa-map-marker"></i></button>
-                </div>
-                {
-                    props.posts?.posts?.length === 0 && "No Posts found "
-                }
-            </div>
+                        <div className="dashboard_search_location">
+                            <div className="dashboard_search">
+                                <input type="search" required />
+                                <SearchIcon />
+                            </div>
 
-            <div className="dashboard_posts">
+                            <div className="dashboard_location">
+                                <button>location<i className="fa fa-map-marker"></i></button>
+                            </div>
 
-                {
-                    props.posts?.posts?.map((post, index) => (
-                        //    { console.log(post)&& 2}
+                        </div>
 
-                        <Post key={index} post={post} />
-                    ))
-                }
-            </div>
+                        <div className="dashboard_posts">
+
+                            {
+                                props.posts?.posts?.map((post, index) => (
+                                    //    { console.log(post)&& 2}
+
+                                    <Post key={index} post={post} />
+                                ))
+                            }
+                        </div>
+                    </div>
+            }
         </div>
+
     )
 }
 
