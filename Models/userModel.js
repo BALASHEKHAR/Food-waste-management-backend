@@ -17,10 +17,7 @@ const UserSchema = new mongoose.Schema({
         min: 6,
         require: true
     },
-    points: {
-        type: Number,
-        default: 100
-    },
+
     image: {
         type: String,
         default: defaultImg

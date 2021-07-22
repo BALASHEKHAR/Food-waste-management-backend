@@ -16,13 +16,14 @@ import SaveAlt from '@material-ui/icons/SaveAlt';
 import Search from '@material-ui/icons/Search';
 import ViewColumn from '@material-ui/icons/ViewColumn';
 import './Donate.css'
-import axios from 'axios'
+import CloseIcon from '@material-ui/icons/Close';
+import Snackbar from '@material-ui/core/Snackbar';
 import { CountryDropdown, RegionDropdown } from 'react-country-region-selector';
 
 import {
     Box,
     Typography,
-    Snackbar,
+
     Backdrop,
     CircularProgress,
 } from '@material-ui/core';
@@ -55,22 +56,30 @@ class AddProduct extends React.Component {
         super(props)
 
         this.state = {
+            snakbarmessage: "",
+            open: false,
             snakbar: false,
             loading: false,
-            Description: { error: "", value: props.location?.state?.description },
-            address: { error: "", value: props.location?.state?.address },
-            country: { value: props.location?.state?.country },
-            region: { value: props.location?.state?.region },
-            any_other: { error: "", value: props.location?.state?.any_other },
+            Description: { error: "", value: props.location.state ? props.location?.state?.description : "" },
+            address: { error: "", value: props.location.state ? props.location?.state?.address : "" },
+            country: props.location.state ? props.location?.state?.country : "",
+            region: props.location.state ? props.location?.state?.region : "",
+            any_other: { error: "", value: props.location.state ? props.location?.state?.any_other : "" },
             images: props.location.state ? [...props.location?.state?.images] : [],
             columns: [
                 { title: 'item_name', field: 'item_name' },
-                { title: 'availability', field: 'availability' },
-                { title: 'spoil_in_hrs', field: 'spoil_in_hrs' },
+                { title: 'availability', field: 'availability', type: 'numeric' },
+                { title: 'spoil_in_hrs', field: 'spoil_in_hrs', type: 'numeric' },
             ],
             data: props.location.state ? [...props.location?.state?.fooditems] : [],
         }
     }
+
+    handleClose = (event, reason) => {
+        this.setState({
+            open: false
+        })
+    };
 
     selectCountry(val) {
         this.setState({ country: val });
@@ -146,14 +155,60 @@ class AddProduct extends React.Component {
             this.removeImage();
     }
 
+    checkValidation = (val, msg) => {
 
+        if (val.value.trim().length === 0) {
+            this.setState({
+                snakbarmessage: msg,
+                open: true
+            })
+            return 1;
+        }
+        return 0;
+    }
 
     savePostData = async () => {
 
         if (this.state.images.length < 1) {
-            console.log("add atleast 3 images");
+            this.setState({
+                snakbarmessage: "select atleast one image",
+                open: true
+            })
             return;
         }
+        if (this.checkValidation(this.state.Description, "write some description"))
+            return;
+        // if (this.checkValidation(this.state.country, "select country"))
+        //     return;
+        // if (this.checkValidation(this.state.region, "select region"))
+        //     return;
+
+        if (this.state.country.trim().length === 0) {
+            this.setState({
+                snakbarmessage: "select country",
+                open: true
+            })
+            return;
+        }
+        if (this.state.region.trim().length === 0) {
+            this.setState({
+                snakbarmessage: "select region",
+                open: true
+            })
+            return;
+        }
+        if (this.checkValidation(this.state.address, "please choose address"))
+            return;
+        if (this.state.data.length === 0) {
+            this.setState({
+                snakbarmessage: "Add atleast one item",
+                open: true
+            })
+            return;
+        }
+
+        // perfect place to go
+
         this.setState({
             loading: true
         })
@@ -231,7 +286,7 @@ class AddProduct extends React.Component {
                 <br />
 
                 <label htmlFor="contained-button-file" className="donate-btn">
-                    <span >Add Image</span>
+                    <span>Add Image</span>
                 </label>
 
                 <br />
@@ -332,7 +387,7 @@ class AddProduct extends React.Component {
 
                 <br />
 
-                <label className="donate-btn" onClick={() => this.savePostData()}>
+                <label className="donate-btn1" onClick={() => this.savePostData()}>
                     <span >Upload</span>
                 </label>
 
@@ -354,6 +409,22 @@ class AddProduct extends React.Component {
                     open={this.state.loading} >
                     <CircularProgress color="primary" />
                 </Backdrop>
+                <Snackbar
+                    anchorOrigin={{
+                        vertical: 'bottom',
+                        horizontal: 'left',
+                    }}
+                    open={this.state.open}
+                    autoHideDuration={6000}
+                    onClose={this.handleClose}
+                    message={this.state.snakbarmessage}
+                    action={
+                        <React.Fragment>
+                            <IconButton size="small" aria-label="close" color="inherit" onClick={this.handleClose}>
+                                <CloseIcon fontSize="small" />
+                            </IconButton>
+                        </React.Fragment>
+                    } />
 
             </Box>
         )

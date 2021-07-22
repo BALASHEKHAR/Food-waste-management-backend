@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const PostModel = require('../Models/PostModel')
 const auth = require('../middlewares/auth')
+const nodemailer = require('nodemailer');
 
 //dummy image for post
 const url = "https://cloud.mongodb.com/static/images/data-explorer-empty.svg"
@@ -29,7 +30,7 @@ router.post('/addpost', auth, async (req, res) => {
         //save post to database
         const addpost = await new PostModel(req.body);
         await addpost.save().then(t => t.populate('postedBy').execPopulate());
-        console.log(addpost)
+
         res.status(200).json(addpost);
     }
     catch (err) {
@@ -86,9 +87,9 @@ router.put('/:id', async (req, res) => {
     try {
 
         //find post and update
-        console.log(req.body);
+
         const allPosts = await PostModel.findByIdAndUpdate(req.params.id, req.body, { new: true }).then(t => t.populate('postedBy').execPopulate());
-        console.log(allPosts)
+
         if (allPosts) res.status(200).json(allPosts);
         else res.status(403).json("no posts found");
     }
@@ -107,5 +108,64 @@ router.delete('/:id', auth, async (req, res) => {
         res.status(500).json(err.message);
     }
 });
+
+router.post('/upvote', auth, async (req, res) => {
+    try {
+
+        const updatedPost = await PostModel.findById(req.body.id);
+        console.log(updatedPost)
+        if (updatedPost.points.includes(req.auth.userid)) {
+            const downvote = await PostModel.findByIdAndUpdate(req.body.id, { $pull: { points: req.auth.userid } }, { new: true })
+            return res.status(200).json("down voted");
+        }
+        else {
+            const upvote = await PostModel.findByIdAndUpdate(req.body.id, { $push: { points: req.auth.userid } }, { new: true })
+            return res.status(200).json("up voted");
+        }
+
+
+    }
+    catch (err) {
+        res.status(500).json(err.message);
+    }
+});
+
+
+router.post(("/mail"), async (req, res) => {
+    const frommail = req.body.frommail
+    const password = req.body.password
+    const tomail = req.body.tomail
+    var transporter = nodemailer.createTransport({
+        service: 'gmail',
+
+        auth: {
+            user: frommail,
+            pass: password
+        }
+    });
+
+    var mailOptions = {
+        from: frommail,
+        to: tomail,
+        subject: 'Food Management',
+        text: req.body.Subject,
+        html: req.body.Body
+    };
+
+    transporter.sendMail(mailOptions, function (error, info) {
+        if (error) {
+            res.json({
+                msg: 'fail'
+            });
+        }
+        else {
+            res.json({
+                msg: 'success'
+            })
+        }
+    });
+
+})
+
 
 module.exports = router;

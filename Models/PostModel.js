@@ -4,6 +4,10 @@ const PostModel = new mongoose.Schema({
     images: [{
         type: String,
     }],
+    points: {
+        type: Array,
+        default: []
+    },
     postedBy: {
         type: ObjectId,
         ref: "user"

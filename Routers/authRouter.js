@@ -100,4 +100,30 @@ router.get('/getuser', auth, async (req, res) => {
 
 });
 
+router.put('/update_user', auth, async (req, res) => {
+    try {
+        const updateUser = await UserModel.findByIdAndUpdate(req.auth.userid, { $set: req.body }, { new: true })
+        res.status(200).send(updateUser)
+    } catch (err) {
+        console.log(err);
+        res.status(500).send("error occured");
+    }
+})
+
+// router.post('/upvote', auth, async (req, res) => {
+//     //console.log(req.body.userID);
+//     try {
+//         const updateUser = await UserModel.findById(req.body.userID);
+//         if (updateUser.points.includes(req.auth.userid)) {
+//             const downvote = await UserModel.findByIdAndUpdate(req.body.userID, { $pull: { points: req.auth.userid } }, { new: true });
+//             return res.status(200).json("down voted");
+//         }
+//         const downvote = await UserModel.findByIdAndUpdate(req.body.userID, { $push: { points: req.auth.userid } }, { new: true });
+//         return res.status(200).json("up voted");
+//     } catch (e) {
+//         console.log(e);
+//         res.status(500).json("error occured at upvote");
+//     }
+// })
+
 module.exports = router;

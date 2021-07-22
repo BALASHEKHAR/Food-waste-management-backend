@@ -3,7 +3,8 @@ import {
     LOAD_POSTS,
     UPDATE_POST,
     DELETE_POST,
-    ERROR
+    ERROR,
+    UP_VOTE
 } from '../actionTypes';
 import axios from 'axios'
 
@@ -13,6 +14,7 @@ export const LoadPosts = (onSuccess) => {
             const posts = await axios.get('/api/post/allposts');
             dispatch({ type: LOAD_POSTS, payload: posts.data });
             onSuccess();
+            console.log('loaded posts')
         } catch (err) {
             dispatch({ type: ERROR, payload: err.response })
         }
@@ -148,6 +150,27 @@ export const DeletePost = (id) => {
         catch (err) {
             console.log(err.message);
         }
+
+    }
+}
+export const upVote = (postId, currentUserId) => {
+    return async (dispatch, getState) => {
+        try {
+            const vpvoted = await axios.post('/api/post/upvote', { id: postId }, {
+                headers: {
+                    'authentication': localStorage.getItem('token')
+
+                }
+            });
+            dispatch({ type: UP_VOTE, payload: { postId, currentUserId } });
+            console.log('sucess');
+
+        }
+        catch (err) {
+            console.log(err.message);
+        }
+
+
 
     }
 }
