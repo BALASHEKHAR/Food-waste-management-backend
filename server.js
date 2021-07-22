@@ -13,18 +13,22 @@ dotenv.config();
 app.use(express.json());
 app.use(cors());
 
-//routers
-app.use('/api/auth', authRouter);
-app.use('/api/post', PostRouter);
+
+const URI = process.env.MONGOURL;
+mongoose.set('useCreateIndex', true);
 
 //connect to mongo db
-mongoose.connect(process.env.MONGOURL, { useUnifiedTopology: true, useNewUrlParser: true, useCreateIndex: true, useFindAndModify: false })
+mongoose.connect(URI, { useUnifiedTopology: true, useNewUrlParser: true, useCreateIndex: true, useFindAndModify: false })
     .then(() => {
         console.log("connected to mogodb")
     })
     .catch((err) => {
         console.log(err.message);
     })
+
+//routers
+app.use('/api/auth', authRouter);
+app.use('/api/post', PostRouter);
 
 //listening to port 5000
 app.listen(port, () => {
