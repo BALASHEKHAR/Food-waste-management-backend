@@ -17,6 +17,8 @@ const AutoPlaySwipeableViews = autoPlay(SwipeableViews);
 
 function Post(props) {
 
+    console.log(props);
+
     const [activeStep, setactiveStep] = useState(0);
     const [vote, setVote] = useState("");
     const handleStepChange = (step) => {
