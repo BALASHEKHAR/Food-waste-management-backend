@@ -38,5 +38,5 @@ Tech Stack used:
 10. React-swipeable-views
 
 # Hosted on Netlify
-have a look [live url](https://food-waste-managements.netlify.app/)
+have a look [live url](https://food-waste-management-system.netlify.app/)
 
